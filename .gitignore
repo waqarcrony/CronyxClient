@@ -1,0 +1,115 @@
+##################################################
+# Visual Studio / .NET Git Ignore (Clean + Strict)
+##################################################
+
+############################
+# Build Folders
+############################
+bin/
+obj/
+**/bin/
+**/obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+out/
+
+############################
+# Publish Output (IMPORTANT)
+############################
+publish/
+**/publish/
+**/*publish*/
+cronyxapppublish/
+cronyxPublish/
+serviceinstallpublish/
+
+############################
+# Visual Studio Cache
+############################
+.vs/
+*.suo
+*.user
+*.userosscache
+*.rsuser
+*.sln.docstates
+
+############################
+# Logs
+############################
+*.log
+logs/
+UpgradeLog*.htm
+UpgradeLog*.XML
+
+############################
+# Executables / Binaries
+############################
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.obj
+*.iobj
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tmp
+
+############################
+# Installer / Packages
+############################
+*.msi
+*.zip
+*.rar
+*.7z
+*.nupkg
+*.snupkg
+
+############################
+# NuGet
+############################
+packages/
+**/packages/*
+!**/packages/build/
+
+############################
+# .NET Core
+############################
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+############################
+# OS Files
+############################
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+############################
+# Node (if ever used)
+############################
+node_modules/
+
+############################
+# Test Results
+############################
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+############################
+# Misc
+############################
+*.cache
+*.dbmdl
+*.pfx
+*.publishsettings
+*.bak
+*.tmp
