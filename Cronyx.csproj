@@ -14,8 +14,4 @@
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.3" />
     <PackageReference Include="Polly" Version="8.5.2" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CronyxLib\CronyxLib.csproj" />
-  </ItemGroup>
 </Project>
