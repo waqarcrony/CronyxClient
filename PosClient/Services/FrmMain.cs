@@ -8,7 +8,7 @@ namespace PosClient
         public FrmMain()
         {
             InitializeComponent();
-        }
+        } 
 
         private void FrmMain_Shown(object sender, EventArgs e)
         {
