@@ -14,17 +14,22 @@ namespace PosClient
         {
             try
             {
-
                 UseWaitCursor = true;
                 var rs = await HttpClientHelper.SendRequestAsync(HttpMethod.Get,
-                                                                 url: Utility.ServerURL + "Authenticate/ValidateLicense?licenseNumber="
+                                                                 url: Utility.ServerURL + "Authenticate/GetToken?licenseNumber="
                                                                         + TxtLicense.Text.Trim()
                                                                         + "&macAddress=" + TxtMacAddr.Text.Trim()
                                                                  );
                 UseWaitCursor = false;
-                if (rs.IsSuccess && rs.SuccessContents != null && rs.SuccessContents?.ToString().Length > 10)
+                if (rs.IsSuccess && !string.IsNullOrEmpty(rs.SuccessContents) && rs.SuccessContents?.ToString().Length > 10)
                 {
-                    MessageBox.Show("Connection to server successful.");
+                    SecureStorage.SaveToken(rs.SuccessContents);
+
+                    FrmMain frmMain = new FrmMain();
+                    frmMain.Show();
+
+                    this.DialogResult = DialogResult.OK;
+                    this.Hide();
                 }
                 else
                 {
@@ -33,6 +38,7 @@ namespace PosClient
             }
             catch (Exception ex)
             {
+                UseWaitCursor = false;
                 MessageBox.Show($"An error occurred while connecting to the server. Error details: {ex.Message}");
             }
         }

@@ -28,16 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            listView1 = new ListView();
+            LstDevices = new ListView();
             SuspendLayout();
             // 
-            // listView1
+            // LstDevices
             // 
-            listView1.Location = new Point(69, 68);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(1189, 450);
-            listView1.TabIndex = 0;
-            listView1.UseCompatibleStateImageBehavior = false;
+            LstDevices.Location = new Point(69, 68);
+            LstDevices.Name = "LstDevices";
+            LstDevices.Size = new Size(1189, 450);
+            LstDevices.TabIndex = 0;
+            LstDevices.UseCompatibleStateImageBehavior = false;
             // 
             // FrmMain
             // 
@@ -45,19 +45,19 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1351, 590);
-            Controls.Add(listView1);
+            Controls.Add(LstDevices);
             Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Margin = new Padding(4);
             Name = "FrmMain";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Login";
+            Text = "Main";
             Shown += FrmMain_Shown;
             ResumeLayout(false);
         }
 
         #endregion
 
-        private ListView listView1;
+        private ListView LstDevices;
     }
 }
