@@ -9,7 +9,7 @@ using eTag.SDK.Core.Enum;
 using eTag.SDK.Core.Event;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace CronyxLib
+namespace CronyxLib.Services
 {
     public class ESLHelper
     {
@@ -26,7 +26,7 @@ namespace CronyxLib
         public int seq = 1;
         public bool ESLStarted = false;
         Action<string> _callback;
-        System.Text.StringBuilder txt = new StringBuilder();
+        StringBuilder txt = new StringBuilder();
         string _token = "";
         public async Task<string> TaskESL(Action<string> callback, string token)
         {

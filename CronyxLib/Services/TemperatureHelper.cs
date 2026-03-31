@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CronyxLib
+namespace CronyxLib.Services
 {
     public class TemperatureHelper
     {
         public static double CelsiusToFahrenheit(double celsius)
         {
-            return (celsius * 9 / 5) + 32;
+            return celsius * 9 / 5 + 32;
         }
 
         public static double FahrenheitToCelsius(double fahrenheit)
@@ -48,14 +48,14 @@ namespace CronyxLib
                     //isUpdated = await ch.UpdateDeviceAsync(Convert.ToInt32(dRow["ID"].ToString()), res.stringValue, false, "", "");
                     dc.SetIP(IP);
                     List<DPOSBox.DPOSSensors> sc = dc.GetStatusAll();
-                    string filename = "TMS" + System.DateTime.Now.ToString("yyyyMMddhhmmss");
+                    string filename = "TMS" + DateTime.Now.ToString("yyyyMMddhhmmss");
                     string str2 = "";
                     try
                     {
                         str2 = dc.GetStatusXMLAll();
                     }
                     catch { }
-                    System.IO.File.WriteAllText(outboxFolder + filename + ".xml", str2);
+                    File.WriteAllText(outboxFolder + filename + ".xml", str2);
 
                     await UpdateDeviceApi(api, device.ID, true, str2, str2, "Success", "Success");
 

@@ -5,32 +5,32 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using CronyxLib.Services;
 
 namespace CronyxLib
 {
     public class APICall
     {
-        public static string APIServer = "http://localhost:5131/";
         private string _bearerToken = "";
         public APICall(string token)
         {
             _bearerToken = token;
         }
-        public async Task<AuthResponse<T>> Execute<T>(string url,object requestBody)
+        public async Task<AuthResponse<T>> Execute<T>(string url, object requestBody)
         {
             var client = new HttpClient();
             if (_bearerToken != "")
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
             }
-            
+
 
             var json = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
             {
-                HttpResponseMessage response = await client.PostAsync(string.Concat(APIServer,url), content);
+                HttpResponseMessage response = await client.PostAsync(string.Concat(Utility.ServerURL, url), content);
                 response.EnsureSuccessStatusCode(); // Throws if not 2xx
 
                 string responseContent = await response.Content.ReadAsStringAsync();
@@ -44,8 +44,8 @@ namespace CronyxLib
             {
                 throw new Exception($"Error: {ex.Message}");
             }
-           
-        
+
+
         }
     }
 

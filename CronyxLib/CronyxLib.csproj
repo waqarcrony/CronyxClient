@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="eTag.SDK.Core" Version="2.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.13.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -23,22 +25,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DPOSBox.dll">
+    <None Update="Libraries\DPOSBox.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="DPOSBox.pdb">
+    <None Update="Libraries\DPOSBox.pdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="rtscaledrv.dll">
+    <None Update="Libraries\rtscaledrv.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="rtscaledrv1.dll">
+    <None Update="Libraries\rtscaledrv1.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SYSTEM.CFG">
+    <None Update="Libraries\SYSTEM.CFG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SYSTEM.DAT">
+    <None Update="Libraries\SYSTEM.DAT">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

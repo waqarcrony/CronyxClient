@@ -1,5 +1,6 @@
 ﻿using Cronyx.Services;
 using CronyxLib;
+using CronyxLib.Services;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32.SafeHandles;
@@ -16,7 +17,6 @@ using System.Security.Principal;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
-using uDefine;
 using static System.Net.Mime.MediaTypeNames;
 namespace Cronyx.Services
 {
@@ -26,9 +26,6 @@ namespace Cronyx.Services
         int hitCount = 0;
         public void CreateDirectories()
         {
-
-      
-
             var basePath = Environment.GetFolderPath(
                 Environment.SpecialFolder.CommonApplicationData
             );

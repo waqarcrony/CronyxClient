@@ -1,6 +1,11 @@
-using Microsoft.Win32;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.ServiceProcess;
+using CronyxApp;
+using CronyxLib;
+using CronyxLib.Services;
+using Microsoft.Win32;
+using BackgroundWorker = CronyxLib.Services.BackgroundWorker;
 
 namespace CronyxApp
 {
@@ -9,31 +14,62 @@ namespace CronyxApp
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
+        //[STAThread]
+        //static void Main()
+        //{
+        //    bool isFirstInstance;
+        //    using (Mutex mtx = new Mutex(true, "CronyxAppMutex", out isFirstInstance))
+        //    {
+        //        if (!isFirstInstance)
+        //        {
+        //            // Already running, exit
+        //            return;
+        //        }
+
+        //        ApplicationConfiguration.Initialize();
+        //        Application.EnableVisualStyles();
+        //        Application.SetCompatibleTextRenderingDefault(false);
+
+        //        using (var login = new FrmLogin())
+        //        {
+        //            if (login.ShowDialog() == DialogResult.OK)
+        //            {
+        //                Application.Run(new FrmMain());
+        //            }
+        //        }
+        //    }
+        //}
+
         [STAThread]
-        static void Main()
+        static async Task Main()
         {
-            bool isFirstInstance;
-            using (Mutex mtx = new Mutex(true, "CronyxAppMutex", out isFirstInstance))
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            string? token = TokenService.LoadToken();
+
+            if (!string.IsNullOrEmpty(token))
             {
-                if (!isFirstInstance)
+                var manager = new CronyxServiceManager(token);
+
+                var auth = await manager.ValidateToken();
+
+                if (auth == AuthStatus.Success)
                 {
-                    // Already running, exit
+                    BackgroundWorker.Start(manager);
+
+                    Application.Run(new FrmMain());
                     return;
                 }
-
-                ApplicationConfiguration.Initialize();
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-
-                Application.Run(new Status());
             }
-        
-           
+
+            // fallback to login
+            var login = new FrmLogin();
+
+            if (login.ShowDialog() == DialogResult.OK)
+            {
+                Application.Run(new FrmMain());
+            }
         }
-
-
-      
     }
-
-
 }

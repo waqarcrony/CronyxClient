@@ -12,7 +12,7 @@ using CronyxLib;
 
 namespace CronyxApp
 {
-    public partial class Status : Form
+    public partial class FrmStatus : Form
     {
         NotifyIcon _trayIcon;
         bool inTick = false;
@@ -28,7 +28,7 @@ namespace CronyxApp
                 lblAppStatus.Text = value ? "Activated" : "Not Activated";
             }
         }
-        public Status()
+        public FrmStatus()
         {
             InitializeComponent();
             _trayIcon = new NotifyIcon
@@ -70,11 +70,11 @@ namespace CronyxApp
 
             };
             this.FormClosed += Status_FormClosed;
-           
+
             _checkTimer = new System.Windows.Forms.Timer();
             _checkTimer.Interval = 15000; // Check every 5 seconds
             _checkTimer.Tick += Timer1_Tick;
-        
+
             //_trayIcon.ShowBalloonTip(1000);
 
             CallAPI();
@@ -92,20 +92,20 @@ namespace CronyxApp
                 {
 
                     token = txtToken.Text
-                }); 
+                });
                 if (result2.Success)
                 {
-                    foreach(CodeBlock codetorun in result2.data)
+                    foreach (CodeBlock codetorun in result2.data)
                     {
                         var code = codetorun.Code;
                         var globals = new ScriptGlobals
                         {
                             tokenValue = txtToken.Text,
                             button1 = this.button1,
-                            label1=this.label1,
+                            label1 = this.label1,
                             label3 = this.label3,
-                            RestartService= CheckandRestartService,
-                            ShowBalloonRemote= ShowBalloon
+                            RestartService = CheckandRestartService,
+                            ShowBalloonRemote = ShowBalloon
                         };
 
                         var options = ScriptOptions.Default
@@ -117,27 +117,20 @@ namespace CronyxApp
                         script.Compile(); // Optional, to check for syntax errors
 
                         var result = await script.RunAsync(globals);
-                       
+
                     }
                     return true;
-
-                 
                 }
                 else
                 {
-                   
                     return false;
-
                 }
             }
             catch (Exception ex)
             {
                 return false;
             }
-
-          
         }
-
 
         private void ShowBalloon(string vStr, int Timeout)
         {
@@ -176,15 +169,15 @@ namespace CronyxApp
                 txtToken.Text = token;
 
                 cmdActive.Visible = false;
-                AuthStatus aStatus=await Auth();
-                if (aStatus==AuthStatus.Success )
+                AuthStatus aStatus = await Auth();
+                if (aStatus == AuthStatus.Success)
                 {
                     _checkTimer.Interval = 15000; // Check every 15 seconds
 
                     CronyxActivated();
                     _checkTimer.Start();
                 }
-                else if (aStatus==AuthStatus.Failed)
+                else if (aStatus == AuthStatus.Failed)
                 {
                     _checkTimer.Interval = 15000; // Check every 15 seconds
 
@@ -206,7 +199,7 @@ namespace CronyxApp
         {
             isActivated = false;
             ShowBalloon("Activation Required  *******, Please click here", 5000);
-            txtToken.Text = new CronyxLib.Crypto().GenerateToken();
+            txtToken.Text = new CronyxLib.Services.Crypto().GenerateToken();
             cmdActive.Visible = true;
         }
         private void CronyxActivated()
@@ -218,7 +211,7 @@ namespace CronyxApp
         public async Task<AuthStatus> Auth()
         {
             AuthStatus authStatus = AuthStatus.NoConnection;
-            
+
             try
             {
                 CronyxLib.APICall aPICall = new CronyxLib.APICall(txtToken.Text);
@@ -231,7 +224,7 @@ namespace CronyxApp
                 if (result.Success)
                 {
 
-                    authStatus=AuthStatus.Success;
+                    authStatus = AuthStatus.Success;
                 }
                 else
                 {
@@ -247,7 +240,7 @@ namespace CronyxApp
         }
 
 
-        public async Task<bool> ReportStatus(bool vStatus,string vStatusText)
+        public async Task<bool> ReportStatus(bool vStatus, string vStatusText)
         {
             bool rt = false;
 
@@ -258,7 +251,7 @@ namespace CronyxApp
                 {
                     status = vStatus.ToString(),
                     statusText = vStatusText,
-                    token = txtToken.Text 
+                    token = txtToken.Text
                 });
                 if (result.Success)
                 {
@@ -281,18 +274,30 @@ namespace CronyxApp
         public bool SaveToken(string token)
         {
             bool rt = false;
-            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "alium", "token.dat");
+
+            string dirPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "alium"
+            );
+
+            string filePath = Path.Combine(dirPath, "token.dat");
+
             try
             {
+                // ensure directory exists
+                if (!Directory.Exists(dirPath))
+                    Directory.CreateDirectory(dirPath);
+
                 byte[] data = Encoding.UTF8.GetBytes(token);
                 byte[] encrypted = ProtectedData.Protect(data, null, DataProtectionScope.LocalMachine);
+
                 File.WriteAllBytes(filePath, encrypted);
+
                 if (token == LoadToken())
-                {
                     rt = true;
-                }
             }
             catch { }
+
             return rt;
         }
 
@@ -320,8 +325,8 @@ namespace CronyxApp
             {
                 bool isR = IsServiceRunning();
 
-               
-                
+
+
             }
             catch (Exception ex)
             {
@@ -329,7 +334,7 @@ namespace CronyxApp
 
             }
 
-           
+
 
         }
         private async void Timer1_Tick(object? sender, EventArgs e)
@@ -345,16 +350,16 @@ namespace CronyxApp
                     await CallAPI();
                 }
                 catch { }
-                inTick =false;
+                inTick = false;
                 return;
             }
             bool isR = false;
 
             try
             {
-                
-                isR=IsServiceRunning();
-                
+
+                isR = IsServiceRunning();
+
             }
             catch (Exception ex)
             {
@@ -366,7 +371,7 @@ namespace CronyxApp
                 await ReportStatus(isR, label1.Text);
 
                 bool rt = await RunCodeFromStringAsync();
-                if(rt==false)
+                if (rt == false)
                 {
                     isActivated = false;
                 }
@@ -414,7 +419,7 @@ namespace CronyxApp
             rt = true;
 
         }
-        
+
         private bool CheckandRestartService()
         {
             bool rt = false;
@@ -461,7 +466,7 @@ namespace CronyxApp
             {
                 label1.Text = $"Service access error: {ex.Message}";
             }
-            return  rt;
+            return rt;
 
         }
         [SupportedOSPlatform("windows")]
@@ -495,7 +500,7 @@ namespace CronyxApp
                 var result2 = await aPICall.Execute<List<UserDeviceInfo>>("Devices/GetDevices", new
                 {
 
-                    
+
                 });
                 if (result2.Success)
                 {
@@ -506,20 +511,20 @@ namespace CronyxApp
 
                     }
                     label3.Text = $"Total Devices Fetched {ct} ";
-                    return ;
+                    return;
 
 
                 }
                 else
                 {
 
-                    return ;
+                    return;
 
                 }
             }
             catch (Exception ex)
             {
-                return ;
+                return;
             }
             //bool rt = await RunCodeFromStringAsync();
             //MessageBox.Show(rt.ToString());
@@ -536,5 +541,5 @@ namespace CronyxApp
         public Func<bool> RestartService { get; set; } = null!;
         public ShowBalloonDelegate ShowBalloonRemote { get; set; } = null!;
     }
-  
+
 }

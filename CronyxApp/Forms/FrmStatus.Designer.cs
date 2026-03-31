@@ -1,6 +1,6 @@
 ﻿namespace CronyxApp
 {
-    partial class Status
+    partial class FrmStatus
     {
         /// <summary>
         ///  Required designer variable.

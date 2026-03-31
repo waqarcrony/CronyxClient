@@ -10,16 +10,16 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using Microsoft.Win32.SafeHandles;
 using System.Text.Json;
-namespace CronyxLib
+namespace CronyxLib.Services
 {
     public class Network
     {
-        [System.Runtime.InteropServices.DllImport("advapi32.dll", SetLastError = true)]
-        public static extern bool LogonUser(string lpszUsername, string lpszDomain, string lpszPassword, int dwLogonType, int dwLogonProvider, ref IntPtr phToken);
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern bool LogonUser(string lpszUsername, string lpszDomain, string lpszPassword, int dwLogonType, int dwLogonProvider, ref nint phToken);
 
         //Disconnection after file operations
-        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
-        public static extern Boolean CloseHandle(IntPtr hObject);
+        [DllImport("kernel32.dll")]
+        public static extern bool CloseHandle(nint hObject);
 
         public string? GetMacAddress()
         {
@@ -55,7 +55,7 @@ namespace CronyxLib
             bool di = false;
             try
             {
-                di = System.IO.Directory.Exists(v);
+                di = Directory.Exists(v);
             }
             catch { }
             return di;
@@ -159,14 +159,14 @@ namespace CronyxLib
             return macAddr;
         }
 
-        public System.Data.DataTable GetSQLSpace()
+        public DataTable GetSQLSpace()
         {
             /*
              DBName	Allocated_Space	Available_Space	Available_%
                 CronyOnline	11336.00	11296.84	99.65
              */
             SQLHelper db = new SQLHelper();
-            System.Data.DataTable dTable = null;
+            DataTable dTable = null;
             try
             {
                 dTable = db.ExecuteTable(@"WITH t(s) AS
@@ -193,7 +193,7 @@ namespace CronyxLib
             return dTable;
         }
       
-        public System.Data.DataTable GetSQLDrive()
+        public DataTable GetSQLDrive()
         {
 
             /*
@@ -202,7 +202,7 @@ namespace CronyxLib
              */
 
             SQLHelper  db = new SQLHelper();
-            System.Data.DataTable dTable = null;
+            DataTable dTable = null;
             try
             {
                 dTable = db.ExecuteTable(@" SELECT DISTINCT sys.databases.name as DBName,dovs.logical_volume_name AS LogicalName,
@@ -222,14 +222,14 @@ namespace CronyxLib
             string lc = "";
             try
             {
-                lc = System.IO.File.ReadAllText("c:\\cronysoft\\lic.dat");
+                lc = File.ReadAllText("c:\\cronysoft\\lic.dat");
             }
             catch { }
             if (lc == "")
             {
                 try
                 {
-                    lc = System.IO.File.ReadAllText("lic.dat");
+                    lc = File.ReadAllText("lic.dat");
                 }
                 catch { }
             }
@@ -251,12 +251,12 @@ namespace CronyxLib
                 lc = Encrypt(lc, cFolderName, true);
                 try
                 {
-                    System.IO.File.WriteAllText("lic.dat", lc);
+                    File.WriteAllText("lic.dat", lc);
                 }
                 catch { oke = false; }
                 try
                 {
-                    System.IO.File.WriteAllText("c:\\cronysoft\\lic.dat", lc);
+                    File.WriteAllText("c:\\cronysoft\\lic.dat", lc);
                 }
                 catch { oke = false; }
             }
@@ -281,10 +281,10 @@ namespace CronyxLib
                 lc = Encrypt(lc, cFolderName, true);
                 try
                 {
-                    System.IO.File.WriteAllText("token.dat", lc);
+                    File.WriteAllText("token.dat", lc);
                     try
                     {
-                        System.IO.File.WriteAllText("c:\\cronysoft\\token2.dat", lc);
+                        File.WriteAllText("c:\\cronysoft\\token2.dat", lc);
                     }
                     catch { }
                 }
@@ -306,10 +306,10 @@ namespace CronyxLib
             if (useHashing)
             {
                 MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
-                keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
+                keyArray = hashmd5.ComputeHash(Encoding.UTF8.GetBytes(key));
             }
             else
-                keyArray = UTF8Encoding.UTF8.GetBytes(key);
+                keyArray = Encoding.UTF8.GetBytes(key);
 
             TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
             tdes.Key = keyArray;
@@ -319,22 +319,22 @@ namespace CronyxLib
             ICryptoTransform cTransform = tdes.CreateDecryptor();
             byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
 
-            return UTF8Encoding.UTF8.GetString(resultArray, 0, resultArray.Length);
+            return Encoding.UTF8.GetString(resultArray, 0, resultArray.Length);
 
         }
 
         public string Encrypt(string toEncrypt, string key, bool useHashing)
         {
             byte[] keyArray;
-            byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
+            byte[] toEncryptArray = Encoding.UTF8.GetBytes(toEncrypt);
 
             if (useHashing)
             {
                 MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
-                keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
+                keyArray = hashmd5.ComputeHash(Encoding.UTF8.GetBytes(key));
             }
             else
-                keyArray = UTF8Encoding.UTF8.GetBytes(key);
+                keyArray = Encoding.UTF8.GetBytes(key);
 
             TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
             tdes.Key = keyArray;

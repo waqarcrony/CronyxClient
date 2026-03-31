@@ -1,10 +1,11 @@
-﻿using eTag.SDK.Core.Entity;
-using eTag.SDK.Core.Enum;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using eTag.SDK.Core.Entity;
+using eTag.SDK.Core.Enum;
 
 namespace CronyxLib
 {
@@ -446,5 +447,14 @@ namespace CronyxLib
         public string FullLog { get; set; }
         public string LastStatus { get; set; }
         public bool isSuccess { get; set; }
+    }
+    public class LoginResponseVM
+    {
+        public int StoreID { get; set; }
+        public string? Token { get; set; }
+        public string StoreName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

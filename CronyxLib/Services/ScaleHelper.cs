@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace uDefine
+namespace CronyxLib.Services
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)] 
 
@@ -115,12 +115,12 @@ namespace uDefine
 
             return;
         }
-        private System.Boolean DisconnectScale(string IPAddr)
+        private bool DisconnectScale(string IPAddr)
         {
             return rtsdrv.rtscaleDisConnectEx(IPAddr) == 0;
         }
 
-        private System.Boolean ConnectScale(string IPAddr)
+        private bool ConnectScale(string IPAddr)
         {
 
             string log = "";
@@ -129,18 +129,18 @@ namespace uDefine
             //string RefLFZKFileName = "";
             string RefCFGFileName = @".\system.cfg";
             //rtsdrv.rtscaleConnect("",@".\system.cfg",22,"COM2",9600) //Use com to connect
-            log+=("Connecting Scale :" + IPAddr);
+            log+="Connecting Scale :" + IPAddr;
             iRtn = rtsdrv.rtscaleConnectEx(RefLFZKFileName, RefCFGFileName, IPAddr);//用以太网连接 With Ethernet connection
-            log += ("Connect Response Received Scale :" + IPAddr);
+            log += "Connect Response Received Scale :" + IPAddr;
             if (iRtn < 0)
             {
-                log += ("Failed :" + IPAddr);
+                log += "Failed :" + IPAddr;
                 //MessageBox.Show("connect fail " + IPAddr );
                 //label1.ForeColor = Color.Red;
                 //label1.Text = "Scale Failed " + IPAddr;
                 return false;
             };
-            log += ("Connected :" + IPAddr);
+            log += "Connected :" + IPAddr;
             lastLog = log;
             return true;
         }
@@ -362,7 +362,7 @@ namespace uDefine
                 str.Append("Error Sales Fetch");
                 return;
             }
-            string dt = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+            string dt = DateTime.Now.ToString("yyyyMMddHHmmss");
             string fl = "WPJR" + dt + seq.ToString() + ".xml";
             str.Append("FileName Generated:" + fl);
             double aWeight = 0;
@@ -381,7 +381,7 @@ namespace uDefine
 
             try
             {
-                System.IO.File.AppendAllText(fl, res2);
+                File.AppendAllText(fl, res2);
             }
             catch { str.Append
                     ("Erro writing file:" + fl); }
@@ -420,7 +420,7 @@ namespace uDefine
             {
                 //LastWIP = sIP;
                 Callback info = scaleAccountCallback;
-                IntPtr p = Marshal.GetFunctionPointerForDelegate(info);
+                nint p = Marshal.GetFunctionPointerForDelegate(info);
                 int r = rtsdrv.rtscaleUploadSaleDataEx(true, p);//Ok: return  Total number of records  Fail: return <0 
                                                                 //listBox1.Items.Add("Found Sales total : " + r.ToString()+" from IP:"+sIP);
 
@@ -463,24 +463,24 @@ namespace uDefine
         public int Tolerance;   //包装误差,0-20 Packaging error, 0-20 
         public int Message1;    //信息1,0-10000 Message 1,
         public byte Reserved;   //保留 // Reserved
-        public Int16 Reserved1; //保留 //Reserved
+        public short Reserved1; //保留 //Reserved
         public byte Message2;   //信息2,0-255 // Message 2, 0- 197
         public byte Reserved2;  //保留 //Reserved
         public byte MultiLabel; // 标签类型 Label type 1,2,4,8,16,32,64,128,,3,12 correspond to the label types of the label editor RTLabel.exe (A0, A1, B0, B1, C0, C1, D0, D1, E0, E1)
         public byte Rebate;   //折扣,0-99  //discounts
         public int Account; //Reserved
     }
-    [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
     public struct ScaleAccount
     {
         public int UserID;  //
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 37)]
         public string Name; //37
         public int LFCode;
-        public Double UnitPrice;
+        public double UnitPrice;
         public int WeightUnit;
-        public Double TotalPrice;
-        public Double Weight;
+        public double TotalPrice;
+        public double Weight;
         public DateTime SaleTime;
         public int Rebate;
         public DateTime OnlineTime;
@@ -493,10 +493,10 @@ namespace uDefine
         public int UserID { get; set; }
         public string Name { get; set; }
         public int LFCode { get; set; }
-        public Double UnitPrice { get; set; }
+        public double UnitPrice { get; set; }
         public int WeightUnit { get; set; }
-        public Double TotalPrice { get; set; }
-        public Double Weight { get; set; }
+        public double TotalPrice { get; set; }
+        public double Weight { get; set; }
         public string SaleTime { get; set; }
         public int Rebate { get; set; }
         public string OnlineTime { get; set; }
@@ -512,7 +512,7 @@ namespace uDefine
         public int LFCode { get; set; } //生鲜码 fresh code, 1-999999, uniquely identifies each fresh product
         public string Code { get; set; }    //货号 goods no, 10 digits
         public int BarCode { get; set; }    //条码类型,0-99    //barcode type, 0-99
-        public Double UnitPrice { get; set; }   //单价,无小数模式,0-9999999 //unit price, no decimal mode, 0-9999999
+        public double UnitPrice { get; set; }   //单价,无小数模式,0-9999999 //unit price, no decimal mode, 0-9999999
         public int WeightUnit { get; set; } //称重单位/Weighing Units 0-12  (0: 50g, 1: g, 2: 10g, 3: 100g, 4: Kg, 5: oz, 6: Lb, 7: 500g, 8: 600g, 9 : PCS (g), 10: PCS (Kg), 11: PCS (oz), 12: PCS (Lb))
         public int Deptment { get; set; }   //部门,2位数字,用来组成条码 // Department, two digits
         public double Tare { get; set; }    //皮重,逻辑换算后应在15Kg内 // Tare, logical conversion should be within 15Kg
@@ -522,7 +522,7 @@ namespace uDefine
         public int Tolerance { get; set; }  //包装误差,0-20 Packaging error, 0-20 
         public int Message1 { get; set; }   //信息1,0-10000 Message 1,
         public byte Reserved { get; set; }  //保留 // Reserved
-        public Int16 Reserved1 { get; set; }    //保留 //Reserved
+        public short Reserved1 { get; set; }    //保留 //Reserved
         public byte Message2 { get; set; }  //信息2,0-255 // Message 2, 0- 197
         public byte Reserved2 { get; set; } //保留 //Reserved
         public byte MultiLabel { get; set; }// 标签类型 Label type 1,2,4,8,16,32,64,128,,3,12 correspond to the label types of the label editor RTLabel.exe (A0, A1, B0, B1, C0, C1, D0, D1, E0, E1)
@@ -663,7 +663,7 @@ namespace uDefine
         /// 0: successful, -1: failed
         /// </returns>
         [DllImport("rtscaledrv.dll")]
-        public static extern int rtscaleGetPluWeight(ref Double dWeight);
+        public static extern int rtscaleGetPluWeight(ref double dWeight);
 
         /// <summary>
         ///传送一组(84条)热键表，到标签秤 Send a group of (84) hot keys to the label scale
@@ -692,18 +692,18 @@ namespace uDefine
 
         [DllImport("rtscaledrv.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "rtscaleUploadSaleDataEx")]
 
-        public static extern int rtscaleUploadSaleDataEx(System.Boolean AIsClear, IntPtr p);
+        public static extern int rtscaleUploadSaleDataEx(bool AIsClear, nint p);
 
         [DllImport("rtscaledrv.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "rtscaleUploadSaleData")]
-        public static extern int rtscaleUploadSaleData(System.Boolean AIsClear, IntPtr p);
+        public static extern int rtscaleUploadSaleData(bool AIsClear, nint p);
 
 
         [DllImport("rtscaledrv.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "rtscaleUploadPluData")]
 
-        public static extern int rtscaleUploadPluData(IntPtr p);
+        public static extern int rtscaleUploadPluData(nint p);
 
         [DllImport("rtscaledrv.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "rtscaleUploadMessage")]
-        public static extern int rtscaleUploadMessage(IntPtr p);
+        public static extern int rtscaleUploadMessage(nint p);
 
 
 

@@ -1,20 +1,20 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-namespace CronyxLib
+using Azure.Core;
+using Newtonsoft.Json;
+namespace CronyxLib.Services
 {
-    public  class Crypto
+    public class Crypto
     {
         // 💡 Ideally, store these securely (e.g., in user secrets or environment vars)
         private static readonly string Key = "My$3cr3tK3y12345";  // 16/24/32 chars for AES
         private static readonly string IV = "MyInitVector1234";  // 16 chars for AES
 
-        public  string Encrypt(string plainText)
+        public string Encrypt(string plainText)
         {
             if (string.IsNullOrEmpty(plainText))
                 return string.Empty;
-            
+
             using var aes = Aes.Create();
             aes.Key = Encoding.UTF8.GetBytes(Key);
             aes.IV = Encoding.UTF8.GetBytes(IV);
@@ -30,7 +30,7 @@ namespace CronyxLib
             return Convert.ToBase64String(ms.ToArray());
         }
 
-        public  string Decrypt(string encryptedText)
+        public string Decrypt(string encryptedText)
         {
             if (string.IsNullOrEmpty(encryptedText))
                 return string.Empty;
@@ -48,11 +48,10 @@ namespace CronyxLib
             return reader.ReadToEnd();
         }
 
-        public  string GenerateToken()
+        public string GenerateToken()
         {
-            return Guid.NewGuid().ToString(); 
+            return Guid.NewGuid().ToString();
 
         }
     }
-
 }
