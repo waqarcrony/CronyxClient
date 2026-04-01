@@ -13,8 +13,6 @@ namespace CronyxApp
     public partial class FrmLogin : Form
     {
         NotifyIcon _trayIcon;
-        bool inTick = false;
-        private bool _isActivated;
 
         public FrmLogin()
         {
@@ -51,54 +49,6 @@ namespace CronyxApp
                 this.Hide();
                 e.Cancel = true;
             };
-
-            this.FormClosed += FrmLogin_FormClosed;
-        }
-
-        private async void FrmLogin_Load(object sender, EventArgs e)
-        {
-            await InitializeApp();
-        }
-
-        private async Task InitializeApp()
-        {
-            string token = TokenService.LoadToken();
-
-            if (string.IsNullOrEmpty(token))
-            {
-                ShowLogin();
-                return;
-            }
-
-            var manager = new CronyxServiceManager(token);
-
-            var auth = await manager.ValidateToken();
-
-            if (auth == AuthStatus.Success)
-            {
-                _isActivated = true;
-                ShowBalloon("Cronyx Activated", 1000);
-
-                BackgroundWorker.Start(manager);
-
-                this.Hide(); // run in tray
-            }
-            else
-            {
-                ShowLogin();
-            }
-        }
-
-        private void ShowLogin()
-        {
-            _isActivated = false;
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-        }
-
-        private void FrmLogin_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            ShowBalloon("Shutting Down", 1000);
         }
 
         private void ShowBalloon(string text, int timeout)
@@ -166,20 +116,15 @@ namespace CronyxApp
                 if (!TokenService.SaveToken(selected.Token))
                     throw new Exception("Token save failed");
 
-                var manager = new CronyxServiceManager(selected.Token);
-
-                BackgroundWorker.Start(manager);
-
-                _isActivated = true;
-
                 ShowBalloon("Login Successful", 1000);
 
-                this.Hide();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (Exception ex)
             {
                 UseWaitCursor = false;
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Error occurred: " + ex.Message);
             }
         }
 

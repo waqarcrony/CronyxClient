@@ -56,8 +56,6 @@ namespace CronyxApp
 
                 if (auth == AuthStatus.Success)
                 {
-                    BackgroundWorker.Start(manager);
-
                     Application.Run(new FrmMain());
                     return;
                 }

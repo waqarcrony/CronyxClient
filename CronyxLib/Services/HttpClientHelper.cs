@@ -57,7 +57,10 @@ namespace CronyxApp.Services.Constants
             var rsString = await response.Content.ReadAsStringAsync();
 
             var rs = JsonConvert.DeserializeObject<ApiResponseViewModel>(rsString);
-
+            if (rs == null)
+            {
+                throw new Exception("Server Error: " + response.StatusCode.ToStringEmpty());
+            }
             return rs;
         }
         public static async Task<bool> IsInternetConnected()

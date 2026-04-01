@@ -105,7 +105,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Cronyx - Login";
             //FormClosed += FrmLogin_FormClosed;
-            Load += FrmLogin_Load;
+            //Load += FrmLogin_Load;
             Shown += FrmLogin_Shown;
             ResumeLayout(false);
             PerformLayout();

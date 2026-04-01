@@ -72,7 +72,7 @@ namespace Cronyx.Services
             hitCount++;
 
             APICall aPICall = new APICall(token);
-            var result = await aPICall.Execute<List<UserDeviceInfo>>("Devices/GetDevices", new
+            var result = await aPICall.Execute<List<UserDeviceInfo>>("Global/GetDevices", new
             {
 
             });

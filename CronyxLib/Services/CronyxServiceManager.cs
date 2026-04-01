@@ -19,19 +19,20 @@ namespace CronyxLib.Services
         {
             try
             {
-                var rs = await HttpClientHelper.SendRequestAsync(HttpMethod.Get,
-                                                                 Utility.ServerURL + "Authenticate/ValidateToken",
-                                                                 headers: new Dictionary<string, string>
-                                                                 {
-                                                                     { "Authorization", "Bearer " + _token }
-                                                                 });
+                var rs = await HttpClientHelper.SendRequestAsync(
+                    HttpMethod.Get,
+                    Utility.ServerURL + "Authenticate/ValidateToken",
+                    headers: new Dictionary<string, string>
+                    {
+                    { "Authorization", "Bearer " + _token }
+                    });
 
                 if (!rs.IsSuccess || rs.SuccessContents == null)
                     return AuthStatus.Failed;
 
                 return AuthStatus.Success;
             }
-            catch (Exception EX)
+            catch
             {
                 return AuthStatus.NoConnection;
             }
@@ -43,14 +44,15 @@ namespace CronyxLib.Services
             {
                 var body = new
                 {
-                    status = status.ToStringEmpty(),
-                    statusText = text.ToStringEmpty(),
+                    status = status.ToString(),
+                    statusText = text
                 };
 
-                var res = await HttpClientHelper.SendRequestAsync(HttpMethod.Post,
-                                                                   Utility.ServerURL + "Authenticate/SetStatus",
-                                                                   JsonConvert.SerializeObject(body)
-                                                                   );
+                var res = await HttpClientHelper.SendRequestAsync(
+                    HttpMethod.Post,
+                    Utility.ServerURL + "Authenticate/SetStatus",
+                    JsonConvert.SerializeObject(body)
+                );
 
                 return res.IsSuccess;
             }
@@ -86,10 +88,10 @@ namespace CronyxLib.Services
             {
                 var res = await HttpClientHelper.SendRequestAsync(
                     HttpMethod.Get,
-                    Utility.ServerURL + "Authenticate/GetCode",
+                    Utility.ServerURL + "Authentication/GetCode",
                     headers: new Dictionary<string, string>
                     {
-                { "Authorization", "Bearer " + _token }
+                    { "Authorization", "Bearer " + _token }
                     });
 
                 if (!res.IsSuccess || res.SuccessContents == null)
@@ -97,8 +99,8 @@ namespace CronyxLib.Services
 
                 var codes = JsonConvert.DeserializeObject<List<CodeBlock>>(res.SuccessContents.ToString());
 
-                if (codes == null)
-                    return false;
+                if (codes == null || codes.Count == 0)
+                    return true;
 
                 foreach (var codeBlock in codes)
                 {
@@ -106,18 +108,18 @@ namespace CronyxLib.Services
                         .AddReferences(typeof(ServiceController).Assembly)
                         .AddImports("System", "System.ServiceProcess", "System.Threading.Tasks");
 
-                    var script = CSharpScript.Create<bool>(codeBlock.Code, options);
+                    var script = CSharpScript.Create(codeBlock.Code, options);
 
                     await script.RunAsync();
                 }
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
-
     }
 }
